@@ -1,6 +1,4 @@
-- hosts: webserver
-  vars:
-   - haproxy-port: 8080
+- hosts: apache_web
   tasks:
     - name: "installing the httpd software"
       package:
@@ -17,29 +15,29 @@
         dest: "/var/www/html/index.php"
         src: "index.php"
 
-    - name: "starting the httpd"
+    - name: "Start services of the httpd"
       service:
         name: "httpd"
         state: started
 
 
                     
-- hosts: loadbalancer
+- hosts: 127.0.0.1
   tasks:
-    - name: "installing the haproxy software into loadBalancer"
+    - name: "Install HAProxy fot the LoadBalancer"
       package:
         name: "haproxy"
         state: present
 
-    - name: "copying the haproxy config file to the loadBalancer"
+    - name: "Configure the loadbalancer"
       template:
         dest: "/etc/haproxy/haproxy.cfg"
-        src: "haproxy.cfg"
+        src: "updated_haproxy.cfg"
 
-    - name: "restarting the loadBalancer"
+    - name: "Start services of the loadBalancer"
       service:
         name: "haproxy"
-        state: restarted
+        state: started
     - name: "Open Port 8080"
       firewalld:
               port: 8080/tcp
